@@ -1,0 +1,69 @@
+Limitations of MapReduce:
+
+1. Since MapReduce is suitable only for batch processing jobs, implementing interactive jobs and models becomes impossible.
+
+2. Applications that involve precomputation on the dataset brings down the advantages of MapReduce.
+
+3. Implementing iterative map reduce jobs is expensive due to the huge space consumption by each job.
+
+4. Problems that cannot be trivially partitionable or recombinable becomes a candid limitation of MapReduce problem solving. For instance, Travelling Salesman problem.
+
+5. Due to the fixed cost incurred by each MapReduce job submitted, application that requires low latency time or random access to a large set of data is infeasible.
+
+RDD:
+
+    Resilient, i.e. fault-tolerant with the help of RDD lineage graph(DAG) and so able to recompute missing or damaged partitions due to node failures.
+    Distributed, since Data resides on multiple nodes.
+    Dataset represents records of the data you work with. The user can load the data set externally which can be either JSON file, CSV file, text file or database via JDBC with no specific data structure.
+
+Hence, each and every dataset in RDD is logically partitioned across many servers so that they can be computed on different nodes of the cluster. 
+-------------------------------------------------------------------
+
+Features of RDD:
+
+In-memory Computation
+
+Spark RDDs have a provision of in-memory computation. It stores intermediate results in distributed memory(RAM) instead of stable storage(disk).
+
+Lazy Evaluations  
+
+All transformations in Apache Spark are lazy, in that they do not compute their results right away. Instead, they just remember the transformations applied to some base data set.
+
+Spark computes transformations when an action requires a result for the driver program. Follow this guide for the deep study of Spark Lazy Evaluation.
+
+ Fault Tolerance
+
+Spark RDDs are fault tolerant as they track data lineage information to rebuild lost data automatically on failure. They rebuild lost data on failure using lineage, each RDD remembers how it was created from other datasets (by transformations like a map, join or groupBy) to recreate itself. Follow this guide for the deep study of RDD Fault Tolerance.
+
+ Immutability
+
+Data is safe to share across processes. It can also be created or retrieved anytime which makes caching, sharing & replication easy. Thus, it is a way to reach consistency in computations.
+
+Partitioning
+
+Partitioning is the fundamental unit of parallelism in Spark RDD. Each partition is one logical division of data which is mutable. One can create a partition through some transformations on existing partitions.
+
+ Persistence
+
+Users can state which RDDs they will reuse and choose a storage strategy for them (e.g., in-memory storage or on Disk).
+Coarse-grained Operations
+
+It applies to all elements in datasets through maps or filter or group by operation.
+
+Location-Stickiness
+
+RDDs are capable of defining placement preference to compute partitions. Placement preference refers to information about the location of RDD
+
+-----------------------------------------------------------
+SPARK-RDD operations:
+
+Transformation Operations:
+
+
+Transformations are kind of operations which will transform your RDD data from one form to another. And when you apply this operation on any RDD, you will get a new RDD with transformed data (RDDs in Spark are immutable, Remember????). Operations like map, filter, flatMap are transformations.
+
+Now there is a point to be noted here and that is when you apply the transformation on any RDD it will not perform the operation immediately. It will create a DAG(Directed Acyclic Graph) using the applied operation, source RDD and function used for transformation. And it will keep on building this graph using the references till you apply any action operation on the last lined up RDD. That is why the transformation in Spark are lazy.
+
+Action Operations:
+
+This kind of operation will also give you another RDD but this operation will trigger all the lined up transformation on the base RDD (or in the DAG) and than execute the action operation on the last RDD. Operations like collect, count, first, saveAsTextFile are actions.
